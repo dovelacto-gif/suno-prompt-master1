@@ -16,8 +16,8 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "tailwindcss": "latest",
-    "postcss": "latest",
-    "autoprefixer": "latest"
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.31",
+"autoprefixer": "^10.4.16"
   }
 }
