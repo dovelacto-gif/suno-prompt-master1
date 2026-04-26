@@ -1,3 +1,42 @@
+const PASSWORD = "1334"; //
+
+function PasswordGate({ children }: { children: React.ReactNode }) {
+  const [input, setInput] = useState("");
+  const [unlocked, setUnlocked] = useState(false);
+
+  const handleSubmit = () => {
+    if (input === PASSWORD) {
+      setUnlocked(true);
+    } else {
+      alert("비밀번호 틀림");
+    }
+  };
+
+  if (!unlocked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+        <div className="text-center">
+          <h1 className="mb-4 text-2xl font-bold">🔒 비밀번호 입력</h1>
+          <input
+            type="password"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="mb-3 rounded-lg px-4 py-2 text-black"
+          />
+          <br />
+          <button
+            onClick={handleSubmit}
+            className="rounded-lg bg-white px-4 py-2 text-black"
+          >
+            Enter
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -99,7 +138,13 @@ function TextField({
   );
 }
 
-export default function SunoPromptMaster() {
+function MainApp() {
+  return (
+    <PasswordGate>
+      <MainApp />
+    </PasswordGate>
+  );
+}
   const [presetKey, setPresetKey] = useState<PresetKey>("citypop");
   const [songTitle, setSongTitle] = useState("Untitled Drive Song");
   const [hook, setHook] = useState("Shine Your Light");
@@ -260,5 +305,12 @@ Special Instructions:
         </div>
       </section>
     </main>
+  );
+}
+export default function SunoPromptMaster() {
+  return (
+    <PasswordGate>
+      <MainApp />
+    </PasswordGate>
   );
 }
