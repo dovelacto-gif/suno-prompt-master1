@@ -84,6 +84,7 @@ const presets = {
     scene: "Night desk, warm lamp, notebook, window, gentle weather outside",
     special: "Background-friendly, not too sleepy, keep a gentle rhythm",
   },
+  
   rnbNight: {
   label: "Night R&B",
   icon: Moon,
@@ -97,6 +98,7 @@ const presets = {
   scene: "City at night, dim lights, quiet streets",
   special: "sensual tone, smooth flow, minimal but impactful lyrics",
 },
+  
   summer: {
   label: "Summer Pop",
   icon: Sun,
@@ -110,6 +112,7 @@ const presets = {
   scene: "Beach, sunlight, friends, open sky",
   special: "catchy chorus, simple and fun lyrics",
 },
+  
   driveChill: {
   label: "Chill Drive",
   icon: Car,
@@ -123,6 +126,7 @@ const presets = {
   scene: "Sunset road, calm wind, passing scenery",
   special: "smooth melody, not too dramatic",
 },
+  
   indie: {
   label: "Indie Emotional",
   icon: Music,
@@ -136,6 +140,7 @@ const presets = {
   scene: "Everyday life, personal moments",
   special: "realistic lyrics, emotional build-up",
 },
+  
   weekendCityPop: {
   label: "Weekend City Pop",
   icon: Car,
@@ -149,6 +154,7 @@ const presets = {
   scene: "Day or night drive, city lights, open road, warm air",
   special: "Make it groovy, catchy, not too dark, perfect for driving",
 },
+  
   lofiRain: {
   label: "Rainy Night Lofi",
   icon: Moon,
@@ -162,6 +168,7 @@ const presets = {
   scene: "Rain outside the window, dim light, alone in a room",
   special: "make it immersive, warm, not too sleepy",
 },
+  
   lofiSnow: {
   label: "First Snow Lofi",
   icon: Moon,
@@ -175,6 +182,7 @@ const presets = {
   scene: "Snow falling slowly, warm room, looking outside",
   special: "keep it gentle, emotional but not sad",
 },
+  
   lofiCafe: {
   label: "Cafe Study Lofi",
   icon: Music,
@@ -188,6 +196,7 @@ const presets = {
   scene: "Cafe, warm light, laptop, quiet chatter",
   special: "not distracting, loop-friendly",
 },
+  
   lofiFocus: {
   label: "Deep Night Focus",
   icon: Moon,
@@ -201,6 +210,7 @@ const presets = {
   scene: "Dark room, only screen light",
   special: "very minimal, no distractions",
 },
+  
   lofiWalk: {
   label: "Night Walk Lofi",
   icon: Car,
@@ -214,6 +224,7 @@ const presets = {
   scene: "Street lights, empty road, night air",
   special: "smooth groove, not too heavy",
 },
+  
   lofiSunset: {
   label: "Sunset Chill",
   icon: Sun,
