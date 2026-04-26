@@ -35,6 +35,7 @@ function PasswordGate({ children }: { children: React.ReactNode }) {
     );
   }
 
+
   return <>{children}</>;
 }
 "use client";
