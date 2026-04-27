@@ -1,247 +1,263 @@
-const PASSWORD = "1334"; //
+"use client";
+
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Music,
+  Sparkles,
+  Copy,
+  RefreshCw,
+  Wand2,
+  Car,
+  Moon,
+  Mic2,
+  Sun,
+  Waves,
+  Trees,
+  Cloud,
+  Piano,
+  Film,
+  Stars,
+} from "lucide-react";
+
+const PASSWORD = "1334";
+
+const presets = {
+  lofiStudy: {
+    label: "Lofi Study",
+    icon: Moon,
+    genre: "Lofi / Chillhop",
+    mood: "Calm, focused, cozy",
+    tempo: "Slow to mid-slow, 65–80 BPM",
+    vibe: "Study-friendly, warm and minimal",
+    instruments: "Soft piano, mellow drums, vinyl noise, subtle bass",
+    vocals: "No vocal or very soft humming",
+    theme: "Quiet focus and calm concentration",
+    scene: "Desk at night, warm lamp, notebook, gentle silence",
+    special: "background-friendly, loopable, not too sleepy",
+  },
+
+  lofiRain: {
+    label: "Lofi Rain",
+    icon: Cloud,
+    genre: "Lofi / Chillhop",
+    mood: "Rainy, calm, emotional, cozy",
+    tempo: "Slow, 60–75 BPM",
+    vibe: "Rainy night focus with warm atmosphere",
+    instruments: "Soft piano, vinyl noise, rain ambience, mellow drums",
+    vocals: "No vocal or soft vocal chops",
+    theme: "Comfort, reflection, quiet emotions",
+    scene: "Rain outside the window, dim room, warm light",
+    special: "immersive rain mood, emotional but not sad",
+  },
+
+  lofiSleep: {
+    label: "Lofi Sleep",
+    icon: Moon,
+    genre: "Lofi / Ambient Chill",
+    mood: "Sleepy, peaceful, soft, warm",
+    tempo: "Very slow, 55–70 BPM",
+    vibe: "Gentle bedtime lofi",
+    instruments: "Soft keys, warm pads, very light drums, tape noise",
+    vocals: "No vocal",
+    theme: "Rest, night calm, peaceful sleep",
+    scene: "Late night bedroom, soft blanket, quiet air",
+    special: "very soft, no sharp sounds, relaxing and loop-friendly",
+  },
+
+  lofiCafe: {
+    label: "Lofi Cafe",
+    icon: Music,
+    genre: "Lofi / Jazzhop",
+    mood: "Warm, relaxed, focused",
+    tempo: "70–85 BPM",
+    vibe: "Cozy cafe study music",
+    instruments: "Jazz chords, soft piano, brushed drums, vinyl texture",
+    vocals: "No vocal",
+    theme: "Studying, writing, calm productivity",
+    scene: "Cafe, warm light, quiet chatter, coffee cup",
+    special: "not distracting, smooth groove, cafe ambience",
+  },
+
+  lofiJazz: {
+    label: "Lofi Jazz",
+    icon: Piano,
+    genre: "Lofi Jazz / Jazzhop",
+    mood: "Smooth, classy, warm",
+    tempo: "70–90 BPM",
+    vibe: "Vintage jazz lounge meets lofi beat",
+    instruments: "Jazz piano, upright bass, soft drums, saxophone accents",
+    vocals: "No vocal or subtle vocal texture",
+    theme: "Relaxed evening, classy mood",
+    scene: "Small jazz bar, warm lights, rainy street outside",
+    special: "jazzy chords, tasteful groove, not too busy",
+  },
+
+  ambientDream: {
+    label: "Ambient Dream",
+    icon: Stars,
+    genre: "Ambient / Dream Pop",
+    mood: "Dreamy, floating, soft",
+    tempo: "Slow, free-flowing",
+    vibe: "Ethereal dreamscape",
+    instruments: "Soft pads, distant piano, airy textures, gentle reverb",
+    vocals: "No vocal or distant angelic vocal layers",
+    theme: "Dreams, memory, floating emotion",
+    scene: "Cloudy dream world, soft light, slow motion",
+    special: "wide space, gentle movement, cinematic softness",
+  },
+
+  ambientSpace: {
+    label: "Ambient Space",
+    icon: Stars,
+    genre: "Ambient / Space Music",
+    mood: "Cosmic, vast, mysterious",
+    tempo: "Slow, atmospheric",
+    vibe: "Floating through deep space",
+    instruments: "Wide synth pads, deep drones, subtle pulses, shimmer textures",
+    vocals: "No vocal",
+    theme: "Space, stars, silence, wonder",
+    scene: "Stars, galaxy, slow orbit, infinite darkness",
+    special: "expansive, minimal, immersive, not scary",
+  },
+
+  ambientForest: {
+    label: "Ambient Forest",
+    icon: Trees,
+    genre: "Ambient / Nature Soundscape",
+    mood: "Peaceful, organic, healing",
+    tempo: "Very slow, natural flow",
+    vibe: "Forest meditation atmosphere",
+    instruments: "Soft pads, wooden textures, light piano, forest ambience",
+    vocals: "No vocal",
+    theme: "Nature, breathing, quiet healing",
+    scene: "Deep forest, morning mist, birds, leaves moving",
+    special: "natural, calm, spacious, organic textures",
+  },
+
+  ambientSea: {
+    label: "Ambient Sea / Beach",
+    icon: Waves,
+    genre: "Ambient / Chill",
+    mood: "Relaxing, warm, peaceful",
+    tempo: "Slow, wave-like rhythm",
+    vibe: "Ocean waves and sunset beach",
+    instruments: "Soft pads, gentle guitar, ocean ambience, warm textures",
+    vocals: "No vocal or soft distant humming",
+    theme: "Sea, peace, rest, open horizon",
+    scene: "Beach at sunset, waves, sea breeze, golden light",
+    special: "calming ocean mood, warm and spacious",
+  },
+
+  cityPop: {
+    label: "City Pop",
+    icon: Car,
+    genre: "City Pop / Modern Pop",
+    mood: "Bright, stylish, groovy, slightly nostalgic",
+    tempo: "Mid-tempo, 95–110 BPM",
+    vibe: "Japanese city pop with modern pop polish",
+    instruments: "Funky bassline, Rhodes piano, clean guitar, glossy synths, tight drums",
+    vocals: "Smooth male or female vocal, airy and stylish",
+    theme: "Driving, freedom, city lights, good energy",
+    scene: "City road, warm night air, passing lights",
+    special: "catchy chorus, clean groove, not too dark",
+  },
+
+  jpop: {
+    label: "J-Pop",
+    icon: Sparkles,
+    genre: "J-Pop / Pop Rock",
+    mood: "Bright, emotional, energetic",
+    tempo: "Mid to up-tempo",
+    vibe: "Anime opening energy with heartfelt pop melody",
+    instruments: "Electric guitars, bright synths, energetic drums, melodic bass",
+    vocals: "Clear, expressive, youthful vocal",
+    theme: "Hope, youth, courage, moving forward",
+    scene: "Blue sky, city streets, running toward tomorrow",
+    special: "big melodic chorus, emotional lift, catchy hook",
+  },
+
+  rnb: {
+    label: "RnB",
+    icon: Moon,
+    genre: "R&B / Pop",
+    mood: "Smooth, sensual, emotional",
+    tempo: "Slow to mid-tempo",
+    vibe: "Modern late-night R&B",
+    instruments: "Deep bass, soft drums, atmospheric synths, warm keys",
+    vocals: "Breathy, intimate, emotional vocal",
+    theme: "Desire, memory, late-night emotions",
+    scene: "Dim room, city night, quiet tension",
+    special: "smooth flow, minimal but impactful lyrics",
+  },
+
+  neoClassic: {
+    label: "Neo Classic",
+    icon: Piano,
+    genre: "Neo Classical / Minimal Piano",
+    mood: "Elegant, emotional, cinematic",
+    tempo: "Slow to medium",
+    vibe: "Modern classical with intimate piano",
+    instruments: "Solo piano, soft strings, subtle ambient textures",
+    vocals: "No vocal",
+    theme: "Memory, solitude, beauty, quiet emotion",
+    scene: "Empty hall, soft light, falling dust, stillness",
+    special: "minimal, emotional, graceful, not overly dramatic",
+  },
+
+  cinematicClassic: {
+    label: "Cinematic Classic",
+    icon: Film,
+    genre: "Cinematic Classical / Film Score",
+    mood: "Grand, emotional, dramatic",
+    tempo: "Slow build to powerful climax",
+    vibe: "Movie soundtrack with orchestral emotion",
+    instruments: "Piano, strings, brass, timpani, cinematic percussion",
+    vocals: "No vocal or choir-like background texture",
+    theme: "Journey, destiny, farewell, hope",
+    scene: "Wide landscape, final scene, emotional climax",
+    special: "cinematic build, strong emotional arc, memorable main theme",
+  },
+};
+
+type PresetKey = keyof typeof presets;
 
 function PasswordGate({ children }: { children: React.ReactNode }) {
   const [input, setInput] = useState("");
   const [unlocked, setUnlocked] = useState(false);
 
-  const handleSubmit = () => {
-    if (input === PASSWORD) {
-      setUnlocked(true);
-    } else {
-      alert("비밀번호 틀림");
-    }
-  };
-
   if (!unlocked) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
-        <div className="text-center">
-          <h1 className="mb-4 text-2xl font-bold">🔒 비밀번호 입력</h1>
+      <main className="flex min-h-screen items-center justify-center bg-zinc-950 px-5 text-white">
+        <div className="w-full max-w-sm rounded-[2rem] border border-white/10 bg-white/10 p-8 text-center shadow-2xl">
+          <h1 className="mb-3 text-2xl font-black">🔒 Suno Prompt Master</h1>
+          <p className="mb-6 text-sm text-zinc-300">비밀번호를 입력하세요.</p>
           <input
             type="password"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="mb-3 rounded-lg px-4 py-2 text-black"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && input === PASSWORD) setUnlocked(true);
+            }}
+            className="mb-4 w-full rounded-2xl px-4 py-3 text-center text-zinc-950 outline-none"
+            placeholder="Password"
           />
-          <br />
           <button
-            onClick={handleSubmit}
-            className="rounded-lg bg-white px-4 py-2 text-black"
+            onClick={() => {
+              if (input === PASSWORD) setUnlocked(true);
+              else alert("비밀번호가 틀렸습니다.");
+            }}
+            className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-zinc-950 transition hover:bg-zinc-200"
           >
             Enter
           </button>
         </div>
-      </div>
+      </main>
     );
   }
 
-
   return <>{children}</>;
 }
-"use client";
-
-import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { Music, Sparkles, Copy, RefreshCw, Wand2, Car, Moon, Mic2 } from "lucide-react";
-
-const presets = {
-  citypop: {
-    label: "City Pop Drive",
-    icon: Car,
-    genre: "City Pop / Modern Pop",
-    mood: "Bright, refreshing, slightly nostalgic",
-    tempo: "Mid-tempo, 95–110 BPM",
-    vibe: "The Weeknd meets Japanese City Pop, clean and groovy",
-    instruments: "Funky bassline, Rhodes electric piano, clean guitar, soft synth pads, light drums",
-    vocals: "Smooth male or female vocal, slightly airy, natural pop tone",
-    theme: "Driving freely, feeling alive, escaping daily routine",
-    scene: "Open road, wind, sunlight, city and nature blending together",
-    special: "Strong memorable chorus hook, smooth flow, avoid clichés like neon and lonely night",
-  },
-  acappella: {
-    label: "A Cappella Pop",
-    icon: Mic2,
-    genre: "A cappella / Pop",
-    mood: "Warm, uplifting, emotional",
-    tempo: "Medium tempo",
-    vibe: "The Real Group meets modern pop harmony",
-    instruments: "No instruments, only vocal arrangement: vocal bass, chords, vocal percussion",
-    vocals: "Layered harmonies, clear lead melody, natural groove-based vocal percussion",
-    theme: "Hope, connection, shining together",
-    scene: "People singing together, shared moments, light and warmth",
-    special: "Harmony-friendly phrasing, rich final chorus, strong hook like Shine Your Light",
-  },
-  lofi: {
-    label: "Lofi Study",
-    icon: Moon,
-    genre: "Lofi / Chillhop",
-    mood: "Calm, cozy, slightly dreamy",
-    tempo: "Slow to medium-slow, 60–80 BPM",
-    vibe: "Late-night study music, warm and focused",
-    instruments: "Soft piano, mellow drums, vinyl noise, subtle rain or snow ambience",
-    vocals: "Optional soft humming or no vocal",
-    theme: "Quiet focus, studying, calm concentration",
-    scene: "Night desk, warm lamp, notebook, window, gentle weather outside",
-    special: "Background-friendly, not too sleepy, keep a gentle rhythm",
-  },
-  
-  rnbNight: {
-  label: "Night R&B",
-  icon: Moon,
-  genre: "R&B / Pop",
-  mood: "Sexy, smooth, late-night vibe",
-  tempo: "Slow to mid-tempo",
-  vibe: "The Weeknd style, atmospheric and emotional",
-  instruments: "Deep bass, ambient synths, soft drums",
-  vocals: "Breathy, intimate, emotional male or female vocal",
-  theme: "Desire, loneliness, night emotions",
-  scene: "City at night, dim lights, quiet streets",
-  special: "sensual tone, smooth flow, minimal but impactful lyrics",
-},
-  
-  summer: {
-  label: "Summer Pop",
-  icon: Sun,
-  genre: "Pop",
-  mood: "Bright, energetic, refreshing",
-  tempo: "Up-tempo",
-  vibe: "Feel-good pop, festival vibe",
-  instruments: "Acoustic guitar, bright synths, punchy drums",
-  vocals: "Clear, energetic, youthful tone",
-  theme: "Freedom, youth, happiness",
-  scene: "Beach, sunlight, friends, open sky",
-  special: "catchy chorus, simple and fun lyrics",
-},
-  
-  driveChill: {
-  label: "Chill Drive",
-  icon: Car,
-  genre: "Pop / Chill",
-  mood: "Relaxed, warm, slightly nostalgic",
-  tempo: "Mid-tempo",
-  vibe: "Easy listening, emotional but light",
-  instruments: "Soft keys, light drums, clean guitar",
-  vocals: "Natural, comfortable tone",
-  theme: "Driving, thinking, quiet emotions",
-  scene: "Sunset road, calm wind, passing scenery",
-  special: "smooth melody, not too dramatic",
-},
-  
-  indie: {
-  label: "Indie Emotional",
-  icon: Music,
-  genre: "Indie Pop",
-  mood: "Emotional, honest, slightly raw",
-  tempo: "Mid-tempo",
-  vibe: "Band-style, DAY6 느낌 가능",
-  instruments: "Band setup (guitar, bass, drums)",
-  vocals: "Expressive, emotional delivery",
-  theme: "Growth, struggle, self-reflection",
-  scene: "Everyday life, personal moments",
-  special: "realistic lyrics, emotional build-up",
-},
-  
-  weekendCityPop: {
-  label: "Weekend City Pop",
-  icon: Car,
-  genre: "City Pop / Synth Pop / Modern R&B",
-  mood: "Stylish, smooth, bright but slightly sensual",
-  tempo: "Mid-tempo, 95–110 BPM",
-  vibe: "The Weeknd meets modern Japanese City Pop",
-  instruments: "Funky bassline, glossy synths, Rhodes piano, clean guitar, tight drums",
-  vocals: "Smooth male or female vocal, airy and stylish",
-  theme: "Driving through the city, freedom, attraction, good energy",
-  scene: "Day or night drive, city lights, open road, warm air",
-  special: "Make it groovy, catchy, not too dark, perfect for driving",
-},
-  
-  lofiRain: {
-  label: "Rainy Night Lofi",
-  icon: Moon,
-  genre: "Lofi / Chillhop",
-  mood: "Calm, rainy, emotional, cozy",
-  tempo: "Slow (60–75 BPM)",
-  vibe: "Late night, rain ambience, deep focus",
-  instruments: "Soft piano, vinyl noise, rain sound, mellow drums",
-  vocals: "No vocal or soft humming",
-  theme: "Quiet night, reflection, comfort",
-  scene: "Rain outside the window, dim light, alone in a room",
-  special: "make it immersive, warm, not too sleepy",
-},
-  
-  lofiSnow: {
-  label: "First Snow Lofi",
-  icon: Moon,
-  genre: "Lofi / Chill",
-  mood: "Soft, emotional, nostalgic, pure",
-  tempo: "Slow (65–80 BPM)",
-  vibe: "First snow feeling, warm but slightly melancholic",
-  instruments: "Soft piano, gentle pads, light drums, ambient textures",
-  vocals: "Optional soft vocal chop",
-  theme: "First snow, memories, quiet emotions",
-  scene: "Snow falling slowly, warm room, looking outside",
-  special: "keep it gentle, emotional but not sad",
-},
-  
-  lofiCafe: {
-  label: "Cafe Study Lofi",
-  icon: Music,
-  genre: "Lofi / Chillhop",
-  mood: "Warm, focused, cozy",
-  tempo: "Medium slow (70–85 BPM)",
-  vibe: "Cafe ambience, productive but relaxed",
-  instruments: "Soft piano, jazz chords, vinyl noise, soft drums",
-  vocals: "No vocal",
-  theme: "Studying, calm productivity",
-  scene: "Cafe, warm light, laptop, quiet chatter",
-  special: "not distracting, loop-friendly",
-},
-  
-  lofiFocus: {
-  label: "Deep Night Focus",
-  icon: Moon,
-  genre: "Lofi / Ambient",
-  mood: "Minimal, focused, slightly dark",
-  tempo: "Slow (60–70 BPM)",
-  vibe: "Serious focus, late-night concentration",
-  instruments: "Minimal piano, subtle bass, soft textures",
-  vocals: "No vocal",
-  theme: "Deep work, concentration",
-  scene: "Dark room, only screen light",
-  special: "very minimal, no distractions",
-},
-  
-  lofiWalk: {
-  label: "Night Walk Lofi",
-  icon: Car,
-  genre: "Lofi / Chill",
-  mood: "Cool, reflective, slightly emotional",
-  tempo: "Mid-tempo (75–90 BPM)",
-  vibe: "Walking alone at night",
-  instruments: "Soft keys, lo-fi drums, subtle bass",
-  vocals: "Optional vocal chop",
-  theme: "Thinking, wandering mind",
-  scene: "Street lights, empty road, night air",
-  special: "smooth groove, not too heavy",
-},
-  
-  lofiSunset: {
-  label: "Sunset Chill",
-  icon: Sun,
-  genre: "Lofi / Chillhop",
-  mood: "Warm, peaceful, slightly hopeful",
-  tempo: "Mid-tempo (70–90 BPM)",
-  vibe: "Relaxing sunset mood",
-  instruments: "Warm chords, soft guitar, mellow drums",
-  vocals: "Optional",
-  theme: "Ending the day, calm feeling",
-  scene: "Sunset sky, warm light, breeze",
-  special: "feel-good but calm",
-},
-  
-};
-
-type PresetKey = keyof typeof presets;
 
 function SelectField({
   label,
@@ -263,7 +279,9 @@ function SelectField({
         className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-zinc-400"
       >
         {options.map((option) => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
         ))}
       </select>
     </label>
@@ -295,16 +313,10 @@ function TextField({
 }
 
 function MainApp() {
-  return (
-    <PasswordGate>
-      <MainApp />
-    </PasswordGate>
-  );
-}
-  const [presetKey, setPresetKey] = useState<PresetKey>("citypop");
-  const [songTitle, setSongTitle] = useState("Untitled Drive Song");
-  const [hook, setHook] = useState("Shine Your Light");
-  const [language, setLanguage] = useState("English");
+  const [presetKey, setPresetKey] = useState<PresetKey>("lofiStudy");
+  const [songTitle, setSongTitle] = useState("Untitled Lofi Track");
+  const [hook, setHook] = useState("");
+  const [language, setLanguage] = useState("Instrumental");
   const [customTheme, setCustomTheme] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -328,23 +340,21 @@ Scene: ${preset.scene}
 
 Structure:
 - Intro: short and atmospheric
-- Verse 1: calm and descriptive
-- Pre-Chorus: emotional lift
-- Chorus: catchy, repetitive hook using "${hook}"
-- Verse 2: more energy and movement
-- Bridge: dreamy and minimal
-- Final Chorus: fuller, uplifting, memorable
+- Main Section: clear mood and groove
+- Middle Section: subtle variation
+- Final Section: warm, memorable, loop-friendly ending
 
 Lyrics Style:
-- ${language}, natural pop phrasing
-- concise, not too long
-- image-based and singable
+- ${language}
+- concise and natural if vocals are used
 - avoid overly generic lines
 
 Special Instructions:
 - ${preset.special}
-- make the chorus feel instantly memorable
-- keep the melody smooth and radio-friendly`;
+- make it polished, musical, and ready for Suno
+- keep the arrangement clean and emotionally clear${
+      hook.trim() ? `\n- include the hook phrase: "${hook}"` : ""
+    }`;
   }, [preset, songTitle, hook, language, customTheme]);
 
   const copyPrompt = async () => {
@@ -369,10 +379,12 @@ Special Instructions:
               <Sparkles className="h-4 w-4" /> Suno Prompt Master
             </div>
             <h1 className="text-4xl font-black tracking-tight md:text-6xl">
-              원하는 음악을<br />프롬프트로 정확하게.
+              원하는 음악을
+              <br />
+              프롬프트로 정확하게.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-zinc-600 md:text-lg">
-              장르, 무드, 보컬, 장면을 고르면 Suno에 바로 넣을 수 있는 완성형 프롬프트를 만들어주는 간단한 제작 도구입니다.
+              Lofi, Ambient, City Pop, J-Pop, R&B, 클래식 계열까지 바로 복사해 쓸 수 있는 Suno 프롬프트를 만듭니다.
             </p>
           </div>
 
@@ -402,21 +414,36 @@ Special Instructions:
                 label="스타일 프리셋"
                 value={presetKey}
                 onChange={(value) => setPresetKey(value as PresetKey)}
-                options={Object.entries(presets).map(([value, item]) => ({ value, label: item.label }))}
+                options={Object.entries(presets).map(([value, item]) => ({
+                  value,
+                  label: item.label,
+                }))}
               />
 
-              <TextField label="곡 제목" value={songTitle} onChange={setSongTitle} placeholder="예: Summer Drive" />
-              <TextField label="후렴 Hook" value={hook} onChange={setHook} placeholder="예: Shine Your Light" />
+              <TextField
+                label="곡 제목"
+                value={songTitle}
+                onChange={setSongTitle}
+                placeholder="예: Rainy Window"
+              />
+
+              <TextField
+                label="후렴 Hook / 키워드"
+                value={hook}
+                onChange={setHook}
+                placeholder="필요 없으면 비워두기"
+              />
 
               <SelectField
                 label="가사 언어"
                 value={language}
                 onChange={setLanguage}
                 options={[
+                  { value: "Instrumental", label: "Instrumental" },
                   { value: "English", label: "English" },
                   { value: "Korean", label: "Korean" },
                   { value: "Korean-English mixed", label: "Korean-English mixed" },
-                  { value: "Instrumental", label: "Instrumental" },
+                  { value: "No lyrics, only humming or vocal textures", label: "No lyrics / Vocal texture" },
                 ]}
               />
 
@@ -429,9 +456,10 @@ Special Instructions:
 
               <button
                 onClick={() => {
-                  setSongTitle("Untitled Drive Song");
-                  setHook("Shine Your Light");
-                  setLanguage("English");
+                  setPresetKey("lofiStudy");
+                  setSongTitle("Untitled Lofi Track");
+                  setHook("");
+                  setLanguage("Instrumental");
                   setCustomTheme("");
                 }}
                 className="flex w-full items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50"
@@ -463,6 +491,7 @@ Special Instructions:
     </main>
   );
 }
+
 export default function SunoPromptMaster() {
   return (
     <PasswordGate>
