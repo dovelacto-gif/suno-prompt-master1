@@ -10,7 +10,6 @@ import {
   Wand2,
   Car,
   Moon,
-  Mic2,
   Sun,
   Waves,
   Trees,
@@ -36,7 +35,6 @@ const presets = {
     scene: "Desk at night, warm lamp, notebook, gentle silence",
     special: "background-friendly, loopable, not too sleepy",
   },
-
   lofiRain: {
     label: "Lofi Rain",
     icon: Cloud,
@@ -50,7 +48,6 @@ const presets = {
     scene: "Rain outside the window, dim room, warm light",
     special: "immersive rain mood, emotional but not sad",
   },
-
   lofiSleep: {
     label: "Lofi Sleep",
     icon: Moon,
@@ -64,7 +61,6 @@ const presets = {
     scene: "Late night bedroom, soft blanket, quiet air",
     special: "very soft, no sharp sounds, relaxing and loop-friendly",
   },
-
   lofiCafe: {
     label: "Lofi Cafe",
     icon: Music,
@@ -78,7 +74,6 @@ const presets = {
     scene: "Cafe, warm light, quiet chatter, coffee cup",
     special: "not distracting, smooth groove, cafe ambience",
   },
-
   lofiJazz: {
     label: "Lofi Jazz",
     icon: Piano,
@@ -92,7 +87,6 @@ const presets = {
     scene: "Small jazz bar, warm lights, rainy street outside",
     special: "jazzy chords, tasteful groove, not too busy",
   },
-
   ambientDream: {
     label: "Ambient Dream",
     icon: Stars,
@@ -106,7 +100,6 @@ const presets = {
     scene: "Cloudy dream world, soft light, slow motion",
     special: "wide space, gentle movement, cinematic softness",
   },
-
   ambientSpace: {
     label: "Ambient Space",
     icon: Stars,
@@ -120,7 +113,6 @@ const presets = {
     scene: "Stars, galaxy, slow orbit, infinite darkness",
     special: "expansive, minimal, immersive, not scary",
   },
-
   ambientForest: {
     label: "Ambient Forest",
     icon: Trees,
@@ -134,7 +126,6 @@ const presets = {
     scene: "Deep forest, morning mist, birds, leaves moving",
     special: "natural, calm, spacious, organic textures",
   },
-
   ambientSea: {
     label: "Ambient Sea / Beach",
     icon: Waves,
@@ -148,7 +139,6 @@ const presets = {
     scene: "Beach at sunset, waves, sea breeze, golden light",
     special: "calming ocean mood, warm and spacious",
   },
-
   cityPop: {
     label: "City Pop",
     icon: Car,
@@ -162,7 +152,6 @@ const presets = {
     scene: "City road, warm night air, passing lights",
     special: "catchy chorus, clean groove, not too dark",
   },
-
   jpop: {
     label: "J-Pop",
     icon: Sparkles,
@@ -176,7 +165,6 @@ const presets = {
     scene: "Blue sky, city streets, running toward tomorrow",
     special: "big melodic chorus, emotional lift, catchy hook",
   },
-
   rnb: {
     label: "RnB",
     icon: Moon,
@@ -190,7 +178,6 @@ const presets = {
     scene: "Dim room, city night, quiet tension",
     special: "smooth flow, minimal but impactful lyrics",
   },
-
   neoClassic: {
     label: "Neo Classic",
     icon: Piano,
@@ -204,7 +191,6 @@ const presets = {
     scene: "Empty hall, soft light, falling dust, stillness",
     special: "minimal, emotional, graceful, not overly dramatic",
   },
-
   cinematicClassic: {
     label: "Cinematic Classic",
     icon: Film,
@@ -312,12 +298,40 @@ function TextField({
   );
 }
 
+function ToggleField({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+        checked
+          ? "border-zinc-900 bg-zinc-900 text-white"
+          : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
+      }`}
+    >
+      <span>{label}</span>
+      <span>{checked ? "ON" : "OFF"}</span>
+    </button>
+  );
+}
+
 function MainApp() {
   const [presetKey, setPresetKey] = useState<PresetKey>("lofiStudy");
   const [songTitle, setSongTitle] = useState("Untitled Lofi Track");
   const [hook, setHook] = useState("");
   const [language, setLanguage] = useState("Instrumental");
   const [customTheme, setCustomTheme] = useState("");
+  const [autoTitle, setAutoTitle] = useState(true);
+  const [autoLyrics, setAutoLyrics] = useState(true);
+  const [longSong, setLongSong] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const preset = presets[presetKey];
@@ -325,7 +339,7 @@ function MainApp() {
   const prompt = useMemo(() => {
     const theme = customTheme.trim() || preset.theme;
 
-    return `Title: ${songTitle}
+    return `${autoTitle ? "Generate a catchy, non-generic song title." : `Title: ${songTitle}`}
 
 Genre: ${preset.genre}
 Mood: ${preset.mood}
@@ -338,24 +352,52 @@ Vocals: ${preset.vocals}
 Theme: ${theme}
 Scene: ${preset.scene}
 
-Structure:
-- Intro: short and atmospheric
-- Main Section: clear mood and groove
-- Middle Section: subtle variation
-- Final Section: warm, memorable, loop-friendly ending
+${longSong ? `Song Length:
+- Make the song at least 2 minutes long.
+- Aim for around 2.5 to 3 minutes if possible.
+- Use an extended structure to avoid the song ending too quickly.` : ""}
 
-Lyrics Style:
-- ${language}
-- concise and natural if vocals are used
-- avoid overly generic lines
+Structure:
+- Intro: 8 bars, atmospheric and clear
+- Verse 1: establish mood and main musical idea
+- Pre-Chorus or Build Section: add emotional lift or arrangement growth
+- Chorus / Main Hook: memorable and repeatable
+- Verse 2: develop the idea with more movement
+- Chorus / Main Hook: return with stronger energy
+- Bridge or Instrumental Break: emotional variation or new texture
+- Final Chorus / Final Main Section: extended and fuller
+- Outro: warm ending or fade out
+
+Lyrics Direction:
+${
+  autoLyrics
+    ? `- Generate full lyrics that match the genre, mood, and theme.
+- Use a clear structure: Verse 1 / Pre-Chorus / Chorus / Verse 2 / Bridge / Final Chorus.
+- Keep lines natural, singable, and not too long.
+- Avoid generic cliché phrases.
+- Make the chorus hook memorable.`
+    : `- Do not generate full lyrics unless needed.
+- Focus mainly on musical arrangement and mood.`
+}
+- Language: ${language}
 
 Special Instructions:
 - ${preset.special}
 - make it polished, musical, and ready for Suno
-- keep the arrangement clean and emotionally clear${
-      hook.trim() ? `\n- include the hook phrase: "${hook}"` : ""
+- keep the arrangement clean and emotionally clear
+- use dynamic progression so the track does not feel too short${
+      hook.trim() ? `\n- include this hook or keyword naturally: "${hook}"` : ""
     }`;
-  }, [preset, songTitle, hook, language, customTheme]);
+  }, [
+    preset,
+    songTitle,
+    hook,
+    language,
+    customTheme,
+    autoTitle,
+    autoLyrics,
+    longSong,
+  ]);
 
   const copyPrompt = async () => {
     await navigator.clipboard.writeText(prompt);
@@ -384,7 +426,7 @@ Special Instructions:
               프롬프트로 정확하게.
             </h1>
             <p className="mt-5 max-w-xl text-base leading-7 text-zinc-600 md:text-lg">
-              Lofi, Ambient, City Pop, J-Pop, R&B, 클래식 계열까지 바로 복사해 쓸 수 있는 Suno 프롬프트를 만듭니다.
+              2분 이상 길이, 자동 제목, 자동 가사까지 포함한 Suno 프롬프트를 만듭니다.
             </p>
           </div>
 
@@ -424,14 +466,14 @@ Special Instructions:
                 label="곡 제목"
                 value={songTitle}
                 onChange={setSongTitle}
-                placeholder="예: Rainy Window"
+                placeholder="자동 제목 ON이면 비워둬도 돼요"
               />
 
               <TextField
                 label="후렴 Hook / 키워드"
                 value={hook}
                 onChange={setHook}
-                placeholder="필요 없으면 비워두기"
+                placeholder="예: Shine Your Light / Rainy Window"
               />
 
               <SelectField
@@ -443,7 +485,10 @@ Special Instructions:
                   { value: "English", label: "English" },
                   { value: "Korean", label: "Korean" },
                   { value: "Korean-English mixed", label: "Korean-English mixed" },
-                  { value: "No lyrics, only humming or vocal textures", label: "No lyrics / Vocal texture" },
+                  {
+                    value: "No lyrics, only humming or vocal textures",
+                    label: "No lyrics / Vocal texture",
+                  },
                 ]}
               />
 
@@ -454,6 +499,12 @@ Special Instructions:
                 placeholder="비워두면 프리셋 주제를 사용해요"
               />
 
+              <div className="grid gap-3">
+                <ToggleField label="자동 제목 생성" checked={autoTitle} onChange={setAutoTitle} />
+                <ToggleField label="자동 가사 생성" checked={autoLyrics} onChange={setAutoLyrics} />
+                <ToggleField label="2분 이상 길게 만들기" checked={longSong} onChange={setLongSong} />
+              </div>
+
               <button
                 onClick={() => {
                   setPresetKey("lofiStudy");
@@ -461,6 +512,9 @@ Special Instructions:
                   setHook("");
                   setLanguage("Instrumental");
                   setCustomTheme("");
+                  setAutoTitle(true);
+                  setAutoLyrics(true);
+                  setLongSong(true);
                 }}
                 className="flex w-full items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50"
               >
