@@ -337,219 +337,48 @@ function MainApp() {
   const preset = presets[presetKey];
 
   const prompt = useMemo(() => {
-    const theme = customTheme.trim() || preset.theme;
+  const theme = customTheme.trim() || preset.theme;
 
-    return `${autoTitle ? "Generate a catchy, non-generic song title." : `Title: ${songTitle}`}
+  return `${autoTitle ? "Generate a catchy, non-generic song title." : `Title: ${songTitle}`}
 
 Genre: ${preset.genre}
 Mood: ${preset.mood}
 Tempo: ${preset.tempo}
 Vibe: ${preset.vibe}
 
-Instruments: ${preset.instruments}
-Vocals: ${preset.vocals}
+Instruments:
+${preset.instruments}
 
-Theme: ${theme}
-Scene: ${preset.scene}
+Vocals:
+${preset.vocals}
 
-${longSong ? `Song Length:
-- Make the song at least 2 minutes long.
-- Aim for around 2.5 to 3 minutes if possible.
-- Use an extended structure to avoid the song ending too quickly.` : ""}
+Theme:
+${theme}
+
+Scene:
+${preset.scene}
+
+Style:
+${preset.special}
+Not loop-based, avoid repetition
+Humanized timing and slight imperfections
+Add variations every 8–16 bars
+Evolving arrangement with natural dynamics
+
+Length:
+${longSong ? "At least 2 min (target 2.5–3 min)" : "Around 2 min"}
 
 Structure:
-- Intro: 8 bars, atmospheric and clear
-- Verse 1: establish mood and main musical idea
-- Pre-Chorus or Build Section: add emotional lift or arrangement growth
-- Chorus / Main Hook: memorable and repeatable
-- Verse 2: develop the idea with more movement
-- Chorus / Main Hook: return with stronger energy
-- Bridge or Instrumental Break: emotional variation or new texture
-- Final Chorus / Final Main Section: extended and fuller
-- Outro: warm ending or fade out
-
-Lyrics Direction:
-${
-  autoLyrics
-    ? `- Generate full lyrics that match the genre, mood, and theme.
-- Use a clear structure: Verse 1 / Pre-Chorus / Chorus / Verse 2 / Bridge / Final Chorus.
-- Keep lines natural, singable, and not too long.
-- Avoid generic cliché phrases.
-- Make the chorus hook memorable.`
-    : `- Do not generate full lyrics unless needed.
-- Focus mainly on musical arrangement and mood.`
-}
-- Language: ${language}
-
-Special Instructions:
-- ${preset.special}
-- make it polished, musical, and ready for Suno
-- keep the arrangement clean and emotionally clear
-- use dynamic progression so the track does not feel too short${
-      hook.trim() ? `\n- include this hook or keyword naturally: "${hook}"` : ""
-    }`;
-  }, [
-    preset,
-    songTitle,
-    hook,
-    language,
-    customTheme,
-    autoTitle,
-    autoLyrics,
-    longSong,
-  ]);
-
-  const copyPrompt = async () => {
-    await navigator.clipboard.writeText(prompt);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1400);
-  };
-
-  const PresetIcon = preset.icon;
-
-  return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,#fef3c7,transparent_34%),linear-gradient(135deg,#fafafa,#f4f4f5)] px-5 py-8 text-zinc-900">
-      <section className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8 grid gap-6 md:grid-cols-[1.05fr_0.95fr] md:items-end"
-        >
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm ring-1 ring-zinc-200">
-              <Sparkles className="h-4 w-4" /> Suno Prompt Master
-            </div>
-            <h1 className="text-4xl font-black tracking-tight md:text-6xl">
-              원하는 음악을
-              <br />
-              프롬프트로 정확하게.
-            </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-zinc-600 md:text-lg">
-              2분 이상 길이, 자동 제목, 자동 가사까지 포함한 Suno 프롬프트를 만듭니다.
-            </p>
-          </div>
-
-          <div className="rounded-[2rem] border border-zinc-200 bg-white/85 p-6 shadow-xl backdrop-blur">
-            <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-zinc-900 p-3 text-white">
-                <PresetIcon className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="text-sm text-zinc-500">Current Preset</p>
-                <h2 className="text-2xl font-bold">{preset.label}</h2>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-6 text-zinc-600">{preset.vibe}</p>
-          </div>
-        </motion.div>
-
-        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-lg">
-            <div className="mb-5 flex items-center gap-2">
-              <Wand2 className="h-5 w-5" />
-              <h2 className="text-xl font-bold">프롬프트 설정</h2>
-            </div>
-
-            <div className="space-y-5">
-              <SelectField
-                label="스타일 프리셋"
-                value={presetKey}
-                onChange={(value) => setPresetKey(value as PresetKey)}
-                options={Object.entries(presets).map(([value, item]) => ({
-                  value,
-                  label: item.label,
-                }))}
-              />
-
-              <TextField
-                label="곡 제목"
-                value={songTitle}
-                onChange={setSongTitle}
-                placeholder="자동 제목 ON이면 비워둬도 돼요"
-              />
-
-              <TextField
-                label="후렴 Hook / 키워드"
-                value={hook}
-                onChange={setHook}
-                placeholder="예: Shine Your Light / Rainy Window"
-              />
-
-              <SelectField
-                label="가사 언어"
-                value={language}
-                onChange={setLanguage}
-                options={[
-                  { value: "Instrumental", label: "Instrumental" },
-                  { value: "English", label: "English" },
-                  { value: "Korean", label: "Korean" },
-                  { value: "Korean-English mixed", label: "Korean-English mixed" },
-                  {
-                    value: "No lyrics, only humming or vocal textures",
-                    label: "No lyrics / Vocal texture",
-                  },
-                ]}
-              />
-
-              <TextField
-                label="커스텀 주제"
-                value={customTheme}
-                onChange={setCustomTheme}
-                placeholder="비워두면 프리셋 주제를 사용해요"
-              />
-
-              <div className="grid gap-3">
-                <ToggleField label="자동 제목 생성" checked={autoTitle} onChange={setAutoTitle} />
-                <ToggleField label="자동 가사 생성" checked={autoLyrics} onChange={setAutoLyrics} />
-                <ToggleField label="2분 이상 길게 만들기" checked={longSong} onChange={setLongSong} />
-              </div>
-
-              <button
-                onClick={() => {
-                  setPresetKey("lofiStudy");
-                  setSongTitle("Untitled Lofi Track");
-                  setHook("");
-                  setLanguage("Instrumental");
-                  setCustomTheme("");
-                  setAutoTitle(true);
-                  setAutoLyrics(true);
-                  setLongSong(true);
-                }}
-                className="flex w-full items-center justify-center rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" /> 초기화
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-zinc-200 bg-zinc-950 p-6 text-white shadow-2xl">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Music className="h-5 w-5" />
-                <h2 className="text-xl font-bold">완성 프롬프트</h2>
-              </div>
-              <button
-                onClick={copyPrompt}
-                className="flex items-center rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-zinc-200"
-              >
-                <Copy className="mr-2 h-4 w-4" /> {copied ? "복사됨" : "복사"}
-              </button>
-            </div>
-            <pre className="min-h-[520px] whitespace-pre-wrap rounded-[1.5rem] bg-white/10 p-5 text-sm leading-7 text-zinc-100 ring-1 ring-white/10">
-              {prompt}
-            </pre>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-export default function SunoPromptMaster() {
-  return (
-    <PasswordGate>
-      <MainApp />
-    </PasswordGate>
-  );
-}
+Intro (8 bars), Verse, Build, Hook,
+Verse 2, Hook, Bridge,
+Final extended section, Outro (fade out)${
+    hook.trim() ? `\n\nHook / Keyword:\n${hook}` : ""
+  }`;
+}, [
+  preset,
+  songTitle,
+  hook,
+  customTheme,
+  autoTitle,
+  longSong,
+]);
